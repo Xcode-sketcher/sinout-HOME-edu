@@ -143,7 +143,7 @@ const ShaderCanvas = () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [backgroundColor]);
 
   return <canvas
     ref={canvasRef}

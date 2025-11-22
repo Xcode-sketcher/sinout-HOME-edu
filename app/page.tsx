@@ -3,12 +3,9 @@
 import Image from "next/image";
 import dynamic from 'next/dynamic';
 import { ModernMenu } from "@/components/ModernMenu";
-import { useTheme } from "next-themes";
 
-// Components loaded dynamically to reduce initial bundle size and main-thread work
 const Particles = dynamic(() => import('../components/Particles'), { ssr: false });
 
-// Lazy load components below the fold
 const Timeline = dynamic(() => import("@/components/ui/timeline").then(mod => mod.Timeline));
 const Gallery4 = dynamic(() => import("@/components/ui/gallery4").then(mod => mod.Gallery4));
 const Default = dynamic(() => import("@/components/price-card").then(mod => mod.Default));
@@ -16,10 +13,14 @@ const MacbookScroll = dynamic(() => import("@/components/ui/macbook-scroll").the
 const ProfileCard = dynamic(() => import("../components/ui/ProfileCard"));
 const Footer7 = dynamic(() => import("@/components/footer-7").then(mod => mod.Footer7));
 
+/**
+ * Componente principal da página inicial da aplicação Sinout.
+ * Renderiza a landing page com menu, partículas animadas, timeline, galeria, seções de pagamento e footer.
+ */
 export default function Home() {
-  const { resolvedTheme } = useTheme();
-  const particleColors = resolvedTheme === 'light' ? ['#ffffff'] : ['#ff7a00'];
+  const particleColors = ['#ff7a00', '#ff9a3c', '#ff6b00'];
 
+  // Configuração dos itens do menu de navegação
   const menuItems = [
     { label: "Home", href: "/" },
     { label: "About", href: "#about" },
@@ -27,11 +28,14 @@ export default function Home() {
     { label: "Contact", href: "#contact" },
   ];
 
+  // Configuração dos links sociais
   const socialItems = [
     { label: "GitHub", href: "https://github.com" },
     { label: "LinkedIn", href: "https://linkedin.com" },
     { label: "Twitter", href: "https://twitter.com" },
   ];
+
+  // Dados para a galeria de tecnologias
   const dataGallery = [
     {
       id: "shadcn-ui",
@@ -79,6 +83,8 @@ export default function Home() {
         "https://images.unsplash.com/photo-1550070881-a5d71eda5800?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2NDI3NzN8MHwxfGFsbHwxMjV8fHx8fHwyfHwxNzIzNDM1Mjk4fA&ixlib=rb-4.0.3&q=80&w=1080",
     },
   ];
+
+  // Dados para a timeline de conquistas
   const data = [
     {
       title: "2024",
@@ -237,6 +243,7 @@ export default function Home() {
   ];
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Fundo com partículas animadas */}
       <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
         <Particles
           particleColors={particleColors}
@@ -249,17 +256,35 @@ export default function Home() {
           disableRotation={false}
         />
       </div>
+
+      {/* Menu de navegação */}
       <ModernMenu items={menuItems} socialItems={socialItems} />
-      <div className="border-t border-muted-foreground/50 dark:border-t-muted"></div>
+
+      {/* Separador visual */}
+      <div className="border-t border-border"></div>
+
+      {/* Seção da timeline */}
       <Timeline data={data} />
-      <div className="border-t border-muted-foreground/50 dark:border-t-muted"></div>
+
+      {/* Separador visual */}
+      <div className="border-t border-border"></div>
+
+      {/* Galeria de tecnologias */}
       <Gallery4 items={dataGallery} />
-      <div className="border-t border-muted-foreground/50 dark:border-t-muted"></div>
+
+      {/* Separador visual */}
+      <div className="border-t border-border"></div>
+
+      {/* Seção de pagamento e equipe */}
       <section id="pagamento">
         <Default />
-        <MacbookScroll />
+        <MacbookScroll
+          src="https://images.unsplash.com/photo-1551250928-243dc937c49d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w2NDI3NzN8MHwxfGFsbHwxMjN8fHx8fHwyfHwxNzIzODA2OTM5fA&ixlib=rb-4.0.3&q=80&w=1080"
+          title="Sinout - Plataforma Inovadora"
+          showGradient={true}
+        />
 
-
+        {/* Grid de cartões de perfil da equipe */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProfileCard
             name="Fabio R Rocha"
@@ -310,10 +335,12 @@ export default function Home() {
             avatarUrl="/Felipe.svg"
           />
         </div>
-
-
       </section>
-      <div className="border-t border-muted-foreground/50 dark:border-t-muted"></div>
+
+      {/* Separador visual */}
+      <div className="border-t border-border"></div>
+
+      {/* Rodapé */}
       <Footer7 className="mt-auto" />
     </div>
   );

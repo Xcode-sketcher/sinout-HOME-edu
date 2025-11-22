@@ -130,7 +130,6 @@ const RippleButton: React.FC<RippleButtonProps> = ({
         }
         .hoverborder-variant-visual-ripple {
           background-color: ${hoverBorderEffectColor};
-          /* Ensure the base transition also uses the standardized duration for width/height */
           transition: width ${hoverEffectDuration} ease-out, height ${hoverEffectDuration} ease-out, top 99999s linear, left 9999s linear;
         }
         .hoverborder-variant-grid-cell:hover ~ .hoverborder-variant-visual-ripple {

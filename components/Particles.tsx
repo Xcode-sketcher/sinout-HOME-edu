@@ -2,6 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Renderer, Camera, Geometry, Program, Mesh } from 'ogl';
 
+/**
+ * Propriedades do componente Particles
+ */
 interface ParticlesProps {
   particleCount?: number;
   particleSpread?: number;
@@ -17,8 +20,14 @@ interface ParticlesProps {
   className?: string;
 }
 
-const defaultColors: string[] = ['#ffffff', '#ffffff', '#ffffff'];
+// Default to warm orange tones so background particles match brand color when not overridden
+const defaultColors: string[] = ['#ff7a00', '#ff9a3c', '#ff6b00'];
 
+/**
+ * Converte cor hexadecimal para RGB normalizado (0-1)
+ * @param hex - Cor em formato hexadecimal
+ * @returns Array com valores RGB normalizados
+ */
 const hexToRgb = (hex: string): [number, number, number] => {
   hex = hex.replace(/^#/, '');
   if (hex.length === 3) {
@@ -100,6 +109,11 @@ const fragment = /* glsl */ `
   }
 `;
 
+/**
+ * Componente Particles - Sistema de partículas 3D com WebGL
+ * Renderiza partículas animadas usando OGL (WebGL wrapper)
+ * Suporta interação com mouse e personalização completa
+ */
 const Particles: React.FC<ParticlesProps> = ({
   particleCount = 200,
   particleSpread = 10,
@@ -117,15 +131,18 @@ const Particles: React.FC<ParticlesProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // Inicializa o sistema de partículas WebGL
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    // Configuração do renderer WebGL
     const renderer = new Renderer({ depth: false, alpha: true });
     const gl = renderer.gl;
     container.appendChild(gl.canvas);
     gl.clearColor(0, 0, 0, 0);
 
+    // Configuração da câmera
     const camera = new Camera(gl, { fov: 15 });
     camera.position.set(0, 0, cameraDistance);
 
@@ -149,12 +166,14 @@ const Particles: React.FC<ParticlesProps> = ({
       container.addEventListener('mousemove', handleMouseMove);
     }
 
+    // Geração dos dados das partículas
     const count = particleCount;
     const positions = new Float32Array(count * 3);
     const randoms = new Float32Array(count * 4);
     const colors = new Float32Array(count * 3);
     const palette = particleColors && particleColors.length > 0 ? particleColors : defaultColors;
 
+    // Distribui partículas em esfera uniforme
     for (let i = 0; i < count; i++) {
       let x: number, y: number, z: number, len: number;
       do {
@@ -196,6 +215,7 @@ const Particles: React.FC<ParticlesProps> = ({
     let lastTime = performance.now();
     let elapsed = 0;
 
+    // Loop de animação principal
     const update = (t: number) => {
       animationFrameId = requestAnimationFrame(update);
       const delta = t - lastTime;
@@ -204,6 +224,7 @@ const Particles: React.FC<ParticlesProps> = ({
 
       program.uniforms.uTime.value = elapsed * 0.001;
 
+      // Movimento baseado na posição do mouse
       if (moveParticlesOnHover) {
         particles.position.x = -mouseRef.current.x * particleHoverFactor;
         particles.position.y = -mouseRef.current.y * particleHoverFactor;
@@ -212,6 +233,7 @@ const Particles: React.FC<ParticlesProps> = ({
         particles.position.y = 0;
       }
 
+      // Rotação automática das partículas
       if (!disableRotation) {
         particles.rotation.x = Math.sin(elapsed * 0.0002) * 0.1;
         particles.rotation.y = Math.cos(elapsed * 0.0005) * 0.15;
@@ -247,12 +269,12 @@ const Particles: React.FC<ParticlesProps> = ({
     disableRotation
   ]);
 
-return (
-  <div
-    ref={containerRef}
-    className={`absolute inset-0 w-full h-full ${className}`}
-  />
-);
+  return (
+    <div
+      ref={containerRef}
+      className={`absolute inset-0 w-full h-full ${className}`}
+    />
+  );
 };
 
 export default Particles;
